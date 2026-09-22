@@ -1,0 +1,2 @@
+claim_id,claim_text,claim_type,scope,comparison,metric_and_threshold,run_ids,config_paths,raw_evidence_paths,leakage_check,fair_budget_check,repetition_or_independent_reproduction,limitations,owner,reviewer,status,allowed_usage,notes
+TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,not_checked,not_checked,TODO,TODO,TODO,TODO,draft,research_plan,template_row_no_claim

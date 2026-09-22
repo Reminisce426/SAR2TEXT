@@ -1,0 +1,26 @@
+{
+  "experiment_name": "openclip_vit_b32_zero_shot",
+  "seed": 20260922,
+  "deterministic": true,
+  "model": {
+    "name": "ViT-B-32",
+    "pretrained_path": "/remote-home/sh/weights/ViT-B-32.pt",
+    "expected_sha256": "",
+    "device": "cuda:0",
+    "precision": "fp32"
+  },
+  "data": {
+    "manifest": "/remote-home/sh/data/retrieval_manifest.csv",
+    "image_root": "/remote-home/sh/data/images",
+    "split": "test"
+  },
+  "evaluation": {
+    "batch_size": 64,
+    "num_workers": 4,
+    "query_batch_size": 256,
+    "recall_ks": [1, 5, 10],
+    "case_top_k": 10,
+    "case_count_each": 10
+  },
+  "output_dir": "/remote-home/sh/results/openclip_vit_b32_zero_shot"
+}

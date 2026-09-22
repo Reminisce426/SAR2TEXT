@@ -1,0 +1,2 @@
+run_id,status,task,contribution_type,hypothesis_id,dataset_version,split_sha256,model_version,weights_sha256,config_path,config_sha256,code_commit,seed,hardware,budget_definition,primary_metric,primary_value,secondary_metrics,raw_result_path,log_path,started_at,finished_at,reviewer,review_status,notes
+TODO,planned,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,TODO,,TODO,TODO,TODO,TODO,TODO,TODO,not_reviewed,template_row_no_result

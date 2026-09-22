@@ -1,0 +1,61 @@
+field,level,required,type,description,example
+sample_id,sample,yes,string,不可变样本唯一标识,benv2_s1_000001
+dataset_name,sample,yes,string,父数据集名称,BigEarthNet-v2
+dataset_version,sample,yes,string,数据集版本,2.0
+source_record_type,sample,yes,enum,raw_grd或derived_chip或sar_text,derived_chip
+source_product_id,image,yes,string,原始Sentinel-1产品或父source tile标识,S1A_IW_GRDH_1SDV_...
+source_uri,file,yes,string,原始入口或对象地址,https://...
+license_id,source,yes,string,数据许可证标识,CDLA-Permissive-1.0
+license_uri,source,yes,string,许可证原文链接,https://cdla.dev/permissive-1-0/
+citation,source,yes,string,数据引用信息,Clasen et al. 2025
+file_path,file,yes,string,本地相对路径,data/raw/...
+file_sha256,file,yes,string,文件SHA-256,64_hex_chars
+platform,image,yes,string,卫星平台,S1A
+acquisition_start,image,yes,datetime,UTC成像开始时间,2018-03-27T06:43:01Z
+instrument_mode,image,yes,enum,成像模式,IW
+product_level,image,yes,string,产品级别和类型,Level-1 GRDH
+resolution_class,image,no,string,GRD分辨率级别,H
+polarizations,image,yes,array,真实存在的极化列表,VV|VH
+orbit_direction,image,no,enum,ascending或descending或unknown,descending
+relative_orbit,image,no,integer,相对轨道号,66
+incidence_angle_mean_deg,image,no,float,切块平均入射角,37.4
+backscatter_coefficient,image,yes,enum,DN或beta0或sigma0或gamma0或unknown,sigma0
+value_domain,image,yes,enum,linear_power或decibel或display_8bit或unknown,decibel
+nodata_value,image,no,float,栅格NoData值,-9999
+valid_fraction,image,yes,float,有效像元比例0到1,0.998
+processing_provider,processing,yes,string,处理提供方或脚本,GEE
+processing_steps,processing,yes,string,有序处理步骤,orbit|border_noise|thermal_noise|calibration|terrain_correction|db
+processing_software,processing,yes,string,软件与版本,SNAP-S1TBX
+dem,processing,no,string,地形校正DEM,SRTM30
+speckle_filter,processing,yes,string,none或算法与参数,none
+resampling,processing,no,string,重采样算法,bilinear
+pipeline_id,processing,yes,string,版本化处理配置标识,s1-pipeline-v1
+pipeline_commit,processing,yes,string,代码提交哈希,git_sha
+epsg,spatial,yes,integer,栅格坐标系EPSG,32633
+bbox_wgs84,spatial,yes,string,西南东北边界,minlon|minlat|maxlon|maxlat
+center_lon,spatial,yes,float,中心经度,12.7403
+center_lat,spatial,yes,float,中心纬度,48.1100
+mgrs_tile,spatial,no,string,MGRS瓦片,33UUP
+patch_width_px,spatial,yes,integer,像素宽,120
+patch_height_px,spatial,yes,integer,像素高,120
+gsd_m,spatial,yes,float,地面采样距离米,10
+text_id,text,yes,string,文本唯一标识,cap_000001
+language,text,yes,string,BCP47或简化语言代码,en
+raw_text,text,yes,string,未经规范化的原始文本,The scene contains...
+normalized_text,text,no,string,版本化规范文本,The SAR scene...
+caption_source_type,text,yes,enum,human或template或model或label_conversion,human
+caption_source_ref,text,yes,string,标注记录或生成配置引用,Sentinel2Cap-row-1
+generator_model,text,no,string,自动文本模型和版本,Qwen3-VL-8B-Instruct
+prompt_version,text,no,string,自动文本提示版本,prompt-v1
+human_verified,text,yes,boolean,是否完成人工核验,true
+text_sha256,text,yes,string,UTF-8规范化文本哈希,64_hex_chars
+split,split,yes,enum,train或validation或test,test
+source_group_id,split,yes,string,同源产品分组,srcgrp_001
+spatial_group_id,split,yes,string,空间块分组,grid20km_001
+content_group_id,split,yes,string,重叠或近重复连通分量,contentgrp_001
+group_id,split,yes,string,最终泄漏控制组,leakgrp_001
+nearest_cross_split_distance_m,split,yes,float,最近跨划分样本距离,6150
+qc_status,qc,yes,enum,pending或accept或repair或exclude,accept
+qc_reviewer_ids,qc,no,array,审核者标识,r01|r02
+qc_notes,qc,no,string,问题与证据说明,no_issue
+

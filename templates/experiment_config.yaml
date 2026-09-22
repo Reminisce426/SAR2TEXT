@@ -1,0 +1,71 @@
+# 复制本文件后填写。所有正式实验均应保存一份不可变配置。
+schema_version: "0.1"
+run:
+  run_id: "TODO"
+  purpose: "TODO"
+  status: "planned"  # planned/running/failed/completed/invalidated
+  created_at: "TODO"  # ISO 8601 with timezone
+  owner: "TODO"
+  code_commit: "TODO"
+  command: "TODO"
+
+research_scope:
+  task: "retrieval"  # retrieval/captioning/text_to_sar/other
+  contribution_type: "TODO"  # baseline/engineering/normalization/model_improvement/experimental_support
+  hypothesis_id: "TODO"
+  claim_ids: []
+
+data:
+  data_card: "TODO"
+  dataset_version: "TODO"
+  manifest_path: "TODO"
+  manifest_sha256: "TODO"
+  split_path: "TODO"
+  split_sha256: "TODO"
+  normalization_spec_version: "TODO"
+  leakage_check_record: "TODO"
+
+model:
+  model_card: "TODO"
+  architecture: "TODO"
+  upstream_source: "TODO"
+  weights_path_or_id: "TODO"
+  weights_sha256: "TODO"
+  local_changes: "TODO"
+
+training:
+  seed: null
+  epochs: null
+  max_steps: null
+  batch_size_per_device: null
+  gradient_accumulation_steps: null
+  optimizer: "TODO"
+  learning_rate: null
+  scheduler: "TODO"
+  precision: "TODO"
+  distributed_world_size: null
+
+evaluation:
+  metric_implementation_version: "TODO"
+  primary_metrics: []
+  secondary_metrics: []
+  decision_rule_defined_before_test: "TODO"
+
+environment:
+  os: "TODO"
+  python: "TODO"
+  pytorch: "TODO"
+  cuda: "TODO"
+  gpu: "TODO"
+  gpu_count: null
+  dependency_lock: "TODO"
+
+artifacts:
+  log_path: "TODO"
+  checkpoint_path: "TODO"
+  raw_result_path: "TODO"
+  summary_path: "TODO"
+
+notes:
+  deviations_from_plan: ""
+  invalidation_reason: ""

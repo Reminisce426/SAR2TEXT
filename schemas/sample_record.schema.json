@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/sar-text-sample-v0.1.json",
+  "title": "SAR-text normalization sample record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_id",
+    "source_kind",
+    "source_sha256",
+    "split",
+    "group_id",
+    "image",
+    "text"
+  ],
+  "properties": {
+    "sample_id": {"type": "string", "minLength": 1},
+    "source_kind": {"enum": ["numeric", "rendered"]},
+    "source_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "split": {"enum": ["train", "validation", "test"]},
+    "group_id": {
+      "type": "string",
+      "description": "Leakage-control group, normally source product or registered geographic unit."
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["polarizations", "value_domain", "valid_fraction", "pipeline_id"],
+      "properties": {
+        "product_id": {"type": ["string", "null"]},
+        "acquisition_time": {"type": ["string", "null"], "format": "date-time"},
+        "instrument_mode": {"type": ["string", "null"]},
+        "product_level": {"type": ["string", "null"]},
+        "orbit_direction": {"enum": ["ascending", "descending", "unknown"]},
+        "relative_orbit": {"type": ["integer", "null"], "minimum": 1},
+        "polarizations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["VV", "VH", "HH", "HV"]}
+        },
+        "backscatter_coefficient": {
+          "enum": ["DN", "beta0", "sigma0", "gamma0", "unknown"]
+        },
+        "value_domain": {"enum": ["linear_power", "decibel", "display_8bit", "unknown"]},
+        "thermal_noise_removal": {"enum": ["applied", "not_applied", "unknown"]},
+        "border_noise_handling": {"enum": ["masked", "removed", "not_applied", "unknown"]},
+        "terrain_correction": {"enum": ["applied", "not_applied", "unknown"]},
+        "speckle_filter": {"type": ["string", "null"]},
+        "nodata_policy": {"type": ["string", "null"]},
+        "valid_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "pipeline_id": {"type": "string", "minLength": 1},
+        "array_sha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"}
+      }
+    },
+    "text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "original_text",
+        "normalized_text",
+        "primary_feature",
+        "secondary_features",
+        "coverage",
+        "spatial_relations",
+        "uncertainty",
+        "atomic_facts",
+        "vocabulary_version",
+        "template_version"
+      ],
+      "properties": {
+        "language": {"enum": ["zh", "en", "other"]},
+        "original_text": {"type": "string"},
+        "normalized_text": {"type": "string"},
+        "primary_feature": {"type": ["string", "null"]},
+        "secondary_features": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {"type": "string"}
+        },
+        "coverage": {
+          "enum": ["trace", "minor", "substantial", "dominant", "unknown"]
+        },
+        "spatial_relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subject", "relation", "object"],
+            "properties": {
+              "subject": {"type": "string"},
+              "relation": {
+                "enum": ["inside", "center_of", "edge_of", "adjacent_to", "surrounds", "crosses", "parallel_to"]
+              },
+              "object": {"type": "string"}
+            }
+          }
+        },
+        "uncertainty": {"enum": ["confirmed", "probable", "possible", "unknown"]},
+        "atomic_facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fact", "support", "evidence_type", "evidence_ref"],
+            "properties": {
+              "fact": {"type": "string", "minLength": 1},
+              "support": {"enum": ["supported", "contradicted", "unknown"]},
+              "evidence_type": {"enum": ["dataset_label", "metadata", "human_annotation"]},
+              "evidence_ref": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "prohibited_inference": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "synonym_normalization",
+              "ambiguity_resolution",
+              "coverage_binning",
+              "relation_normalization",
+              "uncertainty_preservation",
+              "unsupported_fact_removal"
+            ]
+          }
+        },
+        "vocabulary_version": {"type": "string", "minLength": 1},
+        "template_version": {"type": "string", "minLength": 1},
+        "reviewer_id": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"source_kind": {"const": "numeric"}},
+        "required": ["source_kind"]
+      },
+      "then": {
+        "properties": {
+          "image": {
+            "required": [
+              "product_id",
+              "backscatter_coefficient",
+              "thermal_noise_removal",
+              "border_noise_handling",
+              "terrain_correction"
+            ],
+            "properties": {
+              "backscatter_coefficient": {
+                "enum": ["DN", "beta0", "sigma0", "gamma0"]
+              },
+              "value_domain": {"enum": ["linear_power", "decibel"]}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"source_kind": {"const": "rendered"}},
+        "required": ["source_kind"]
+      },
+      "then": {
+        "properties": {
+          "image": {
+            "properties": {
+              "value_domain": {"const": "display_8bit"}
+            }
+          }
+        }
+      }
+    }
+  ]
+}

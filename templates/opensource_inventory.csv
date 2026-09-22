@@ -1,0 +1,2 @@
+asset_id,name,asset_type,purpose,official_url,fixed_version_or_doi,license_name,license_url,code_license_checked,weights_terms_checked,data_terms_checked,redistribution_allowed,required_attribution,citation,local_modifications,evidence_snapshot,reviewer,review_date,risk_level,status,notes
+TODO,TODO,code_model_weights_data_paper_tool,TODO,TODO,TODO,TODO,TODO,no,not_applicable,not_applicable,unknown,TODO,TODO,TODO,TODO,TODO,TODO,high,pending_verification,template_row_no_license_claim
