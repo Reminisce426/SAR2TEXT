@@ -3,6 +3,7 @@
 ## 目录和工作树
 
 - 主仓库和成果汇总目录：`C:\Users\LENOVO\Desktop\腾飞科创_SAR-自然语言标准`，Codex项目名 `SAR2text`。
+- Mac 上的 GitHub 克隆目录是独立工作副本。先用 `git rev-parse --show-toplevel` 确认实际仓库根目录；下文 Windows 绝对路径只用于定位 Windows 主仓库，Mac 不应尝试访问。跨设备改动通过 Git 提交、推送和拉取交换，工作副本及 Codex 对话不会自动同步。
 - 允许在该仓库创建的独立Git工作树中工作。写入前核对 `git rev-parse --show-toplevel`、`git rev-parse --git-common-dir` 和 `git status --short`，确认归属和现有改动。
 - 工作树内提交后，由主任务审查并合并回主仓库；工作树间不自动同步。不要从工作树越过隔离直接改主目录的共享文件。
 - `C:\Users\LENOVO\Documents\ChatGPT\腾飞科创_SAR-自然语言标准` 仅为历史副本，禁止写入。若任务仍绑定旧目录且无法在有效目录工作，应说明需在新项目继续，不回退写旧目录。
