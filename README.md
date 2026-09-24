@@ -30,7 +30,7 @@ S1_0001,relative/path/0001.png,S1_0001_c1,"ships are visible near the quay",test
 - 相对路径以配置中的 `image_root` 为基准。
 - 候选库按清单首次出现顺序固定；不要在不同方法间改变清单或测试划分。
 
-先验证清单：
+配置中的相对路径统一以配置文件所在目录为基准，因此从不同工作目录启动时仍会解析到同一批输入。先验证清单：
 
 ```powershell
 $env:PYTHONPATH = "src"
@@ -44,7 +44,14 @@ python -m sar_baseline.validate_manifest --config configs/openclip_vit_b32.json
 1. 复制 `configs/openclip_vit_b32.json` 为一次实验专用配置。
 2. 填写 `data.manifest`, `data.image_root` 和本地 `model.pretrained_path`。
 3. 记录权重的预期 SHA256 到 `model.expected_sha256`；首次不知道时可暂留空，程序仍会在产物中计算并记录实际值。
-4. 执行：
+4. 在加载模型前执行离线输入预检；它会核对配置、清单、图像文件、权重、可选权重哈希和输出位置，不会初始化 OpenCLIP 或 CUDA：
+
+```bash
+export PYTHONPATH=src
+python -m sar_baseline.preflight --config configs/openclip_vit_b32.json
+```
+
+5. 预检通过后执行：
 
 ```bash
 export PYTHONPATH=src
@@ -54,10 +61,13 @@ python -m sar_baseline.run --config configs/openclip_vit_b32.json
 程序不会下载模型。结果写入配置指定的 `output_dir`：
 
 - `resolved_config.json`：本次实际配置；
-- `environment.json`：Python、平台、PyTorch、OpenCLIP、CUDA 和 GPU 信息；
+- `preflight.json`：模型初始化前的配置、清单、图像、权重和输出位置检查记录；
+- `environment.json`：Python、平台、PyTorch、OpenCLIP、CUDA、GPU、Git 提交号和工作树状态；
 - `fingerprints.json`：清单与权重 SHA256；
 - `metrics.json`：双向 Recall@1/5/10、均值和有效查询数；
 - `cases.jsonl`：固定数量的最佳/最差查询及 Top-K 候选，用于案例分析。
+
+`evaluation.case_top_k` 只控制 `cases.jsonl` 中每条案例保留的候选数量；Recall@K 仍按 `evaluation.recall_ks` 独立计算。
 
 ## 最小测试
 

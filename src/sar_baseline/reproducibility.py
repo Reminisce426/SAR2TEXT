@@ -43,7 +43,31 @@ def set_seed(seed, deterministic):
         pass
 
 
-def environment_snapshot():
+def _git_snapshot(repository_dir):
+    command_prefix = ["git"]
+    if repository_dir is not None:
+        command_prefix.extend(["-C", str(Path(repository_dir).resolve())])
+    try:
+        commit = subprocess.run(
+            command_prefix + ["rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        ).stdout.strip()
+        status = subprocess.run(
+            command_prefix + ["status", "--porcelain"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        ).stdout
+        return commit, bool(status.strip())
+    except (OSError, subprocess.SubprocessError):
+        return None, None
+
+
+def environment_snapshot(repository_dir=None):
     snapshot = {
         "python": sys.version,
         "platform": platform.platform(),
@@ -68,17 +92,9 @@ def environment_snapshot():
         snapshot["open_clip"] = getattr(open_clip, "__version__", "unknown")
     except ImportError:
         snapshot["open_clip"] = None
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        snapshot["git_commit"] = result.stdout.strip()
-    except (OSError, subprocess.SubprocessError):
-        snapshot["git_commit"] = None
+    git_commit, git_dirty = _git_snapshot(repository_dir)
+    snapshot["git_commit"] = git_commit
+    snapshot["git_dirty"] = git_dirty
     return snapshot
 
 
