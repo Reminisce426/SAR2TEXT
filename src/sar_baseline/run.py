@@ -5,8 +5,8 @@ from pathlib import Path
 from .config import load_config
 from .encoder import OpenCLIPEncoder
 from .evaluation import evaluate_bidirectional, write_cases
-from .manifest import load_manifest
-from .reproducibility import environment_snapshot, set_seed, sha256_file, write_json
+from .preflight import check_offline_inputs
+from .reproducibility import environment_snapshot, set_seed, write_json
 
 
 def main():
@@ -18,23 +18,11 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     set_seed(config["seed"], config["deterministic"])
-    data_config = config["data"]
-    manifest = load_manifest(
-        data_config["manifest"], data_config["image_root"], data_config["split"]
-    )
-
-    weight_path = Path(config["model"]["pretrained_path"]).expanduser().resolve()
-    actual_weight_hash = sha256_file(weight_path)
-    expected_weight_hash = config["model"].get("expected_sha256", "").strip().lower()
-    if expected_weight_hash and actual_weight_hash != expected_weight_hash:
-        raise ValueError(
-            "Weight SHA256 mismatch: expected {}, got {}".format(
-                expected_weight_hash, actual_weight_hash
-            )
-        )
+    manifest, preflight_report = check_offline_inputs(config)
     fingerprints = {
-        "manifest_sha256": sha256_file(data_config["manifest"]),
-        "weight_sha256": actual_weight_hash,
+        "config_sha256": preflight_report["config_sha256"],
+        "manifest_sha256": preflight_report["manifest_sha256"],
+        "weight_sha256": preflight_report["weight_sha256"],
         "image_count": len(manifest.image_ids),
         "caption_count": len(manifest.caption_ids),
         "candidate_order": "first appearance in manifest after split filtering",
@@ -42,7 +30,12 @@ def main():
     persisted_config = copy.deepcopy(config)
     persisted_config.pop("_config_path", None)
     write_json(output_dir / "resolved_config.json", persisted_config)
-    write_json(output_dir / "environment.json", environment_snapshot())
+    write_json(output_dir / "preflight.json", preflight_report)
+    repository_dir = Path(__file__).resolve().parents[2]
+    write_json(
+        output_dir / "environment.json",
+        environment_snapshot(repository_dir=repository_dir),
+    )
     write_json(output_dir / "fingerprints.json", fingerprints)
 
     encoder = OpenCLIPEncoder(config["model"])

@@ -2,13 +2,21 @@ import json
 from pathlib import Path
 
 
+def _retained_ranking_depth(candidate_count, ranking_depth):
+    if candidate_count <= 0:
+        raise ValueError("At least one candidate is required")
+    if ranking_depth <= 0:
+        raise ValueError("ranking_depth must be positive")
+    return min(candidate_count, ranking_depth)
+
+
 def _direction_metrics(
     query_features, candidate_features, positive_indices, ks, query_batch_size, ranking_depth
 ):
     import torch
 
     candidate_count = candidate_features.shape[0]
-    max_k = min(max(max(ks), ranking_depth), candidate_count)
+    retained_depth = _retained_ranking_depth(candidate_count, ranking_depth)
     hits = {int(k): 0 for k in ks}
     ranks = []
     rankings = []
@@ -22,7 +30,7 @@ def _direction_metrics(
             ranked = order[local_index].tolist()
             best_rank = min(ranked.index(index) + 1 for index in expected)
             ranks.append(best_rank)
-            rankings.append(ranked[:max_k])
+            rankings.append(ranked[:retained_depth])
             for k in hits:
                 hits[k] += int(best_rank <= min(k, candidate_count))
     count = len(ranks)
